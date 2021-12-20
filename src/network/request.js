@@ -1,5 +1,13 @@
 import axios from 'axios';
 
+export function homeRequst(config){
+  const instance = new axios.create({
+    baseURL:'http://123.207.32.32:8000',
+    timeout:10000
+  });
+  return  instance(config)
+}
+
 export function request(config){
   //1创建axios实例
   const instance = new axios.create({

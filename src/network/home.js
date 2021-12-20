@@ -1,7 +1,7 @@
 import {request} from "./request";
 
-export function getHomeMultidata(){
+export function homeRequst(){
   return request({
-    url:'/recommend'
+    url:'/home/multidata'
   })
 }
