@@ -6,6 +6,7 @@
     <scroll class="content" ref="scroll"
             :probe-type="3"
             @scroll='scrollEvent'
+            @pullingUp = 'loadMore'
             :pull-up-load="true">
       <home-swiper :banner="banner"/>
       <recommend-view :recommend='recommend'/>
@@ -98,6 +99,9 @@ export default {
     scrollEvent(position) {
       this.isBackTopShow = -position.y > 1000
     },
+    loadMore(){
+      this.getHomeGoods(this.currentGood)
+    },
 
 
     //网络请求
@@ -112,7 +116,9 @@ export default {
       const page = this.goods[type].page + 1
       getHomeGoods(type, page).then(res => {
         this.goods[type].list.push(...res.data.list);
-        this.goods[type].page += 1
+        this.goods[type].page += 1;
+
+        this.$refs.scroll.finishPullUp()
       })
     }
   }

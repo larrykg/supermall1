@@ -42,11 +42,15 @@ export default {
     //监听上拉事件
     this.scroll.on('pullingUp',()=>{
       console.log('上拉下载更多');
+      this.$emit('pullingUp')
     })
   },
   methods: {
     scrollTo(x, y, time = 1000) {
       this.scroll.scrollTo(x,y,time)
+    },
+    finishPullUp(){
+      this.scroll.finishPullUp()
     }
   }
 }
