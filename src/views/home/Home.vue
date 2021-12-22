@@ -6,7 +6,6 @@
     <scroll class="content" ref="scroll"
             :probe-type="3"
             @scroll='scrollEvent'
-            @pullingUp = 'loadMore'
             :pull-up-load="true">
       <home-swiper :banner="banner"/>
       <recommend-view :recommend='recommend'/>
@@ -75,6 +74,12 @@ export default {
     this.getHomeGoods('new')
     this.getHomeGoods('sell')
   },
+  mounted() {
+    //监听图片加载完成
+    this.$bus.$on('itemImgLoad', () => {
+      this.$refs.bScroll && this.$refs.bScroll.refresh()
+    })
+  },
   methods: {
     //事件监听
     tabClick(index) {
@@ -99,9 +104,6 @@ export default {
     scrollEvent(position) {
       this.isBackTopShow = -position.y > 1000
     },
-    loadMore(){
-      this.getHomeGoods(this.currentGood)
-    },
 
 
     //网络请求
@@ -118,7 +120,6 @@ export default {
         this.goods[type].list.push(...res.data.list);
         this.goods[type].page += 1;
 
-        this.$refs.scroll.finishPullUp()
       })
     }
   }
