@@ -3,15 +3,16 @@
     <nav-bar class="home-nav">
       <div slot="center">购物街</div>
     </nav-bar>
+    <tab-control @tabClick="tabClick" :titles="['流行','新款','精选']" ref="tabControl1" class="tab-control" v-show="isTabFixed" />
     <scroll class="content" ref="scroll"
             :probe-type="3"
             @scroll='scrollEvent'
             @pullingUp='loadMore'
             :pull-up-load="true">
-      <home-swiper :banner="banner"/>
+      <home-swiper :banner="banner" @swiperImageLoad='swiperImageLoad'/>
       <recommend-view :recommend='recommend'/>
       <feature-view/>
-      <tab-control @tabClick="tabClick" class="tab-control" :titles="['流行','新款','精选']"/>
+      <tab-control @tabClick="tabClick" :titles="['流行','新款','精选']" ref="tabControl2" />
       <goods-list :goods="showGood"/>
     </scroll>
     <!--    原生组件的点击需要 .native-->
@@ -60,7 +61,9 @@ export default {
         'sell': {page: 0, list: []}
       },
       currentGood: 'pop',
-      isBackTopShow: false
+      isBackTopShow: false,
+      tabOffsetTop: 0,
+      isTabFixed: false
     }
   },
   computed: {
@@ -81,6 +84,8 @@ export default {
     this.$bus.$on('itemImgLoad', () => {
       refresh()
     })
+
+    this.tabOffsetTop = this.$refs.tabControl2.$el.offsetTop;
   },
   methods: {
     //事件监听
@@ -97,6 +102,8 @@ export default {
           this.currentGood = 'sell';
           break
       }
+      this.$refs.tabControl1.currentIndex = index;
+      this.$refs.tabControl2.currentIndex = index
     },
     backClick() {
       //$refs.scroll:  子组件  由于设置了ref='scroll'
@@ -105,14 +112,20 @@ export default {
     },
 
     scrollEvent(position) {
-      this.isBackTopShow = -position.y > 1000
+      //判断backTop是否显示
+      this.isBackTopShow = -position.y > 1000;
+      //决定tabControl是否吸顶
+      this.isTabFixed = (-position.y) > this.tabOffsetTop
     },
 
     loadMore() {
-      console.log(this.currentGood);
       this.getHomeGoods(this.currentGood)
     },
-
+    swiperImageLoad() {
+      //获取tabControl的offsetTop
+      //所有的组件都有属性和 $el：用于获取组件中的元素
+      this.tabOffsetTop = this.$refs.tabControl.$el.offsetTop;
+    },
 
     //网络请求
     //1请求多个数据
@@ -124,7 +137,6 @@ export default {
     },
     getHomeGoods(type) {
       const page = this.goods[type].page + 1;
-      console.log(page);
       getHomeGoods(type, page).then(res => {
         this.goods[type].list.push(...res.data.list);
         this.goods[type].page += 1;
@@ -139,7 +151,7 @@ export default {
 
 <style scoped>
 #home {
-  padding-top: 44px;
+  /*padding-top: 44px;*/
   /*100 view height*/
   height: 100vh;
   position: relative;
@@ -149,19 +161,14 @@ export default {
   background-color: var(--color-tint);
   color: white;
 
-  position: fixed;
-  left: 0;
-  right: 0;
-  top: 0;
-  z-index: 9;
+  /*position: fixed;*/
+  /*left: 0;*/
+  /*right: 0;*/
+  /*top: 0;*/
+  /*z-index: 9;*/
 
 }
 
-.tab-control {
-  position: sticky;
-  top: 44px;
-  z-index: 9;
-}
 
 .content {
   /*height: 300px;*/
@@ -172,4 +179,9 @@ export default {
 
   /*height: calc(100% - 93px);*/
 }
+.tab-control{
+  position: relative;
+  z-index: 9;
+}
+
 </style>
