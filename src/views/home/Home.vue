@@ -3,7 +3,8 @@
     <nav-bar class="home-nav">
       <div slot="center">购物街</div>
     </nav-bar>
-    <tab-control @tabClick="tabClick" :titles="['流行','新款','精选']" ref="tabControl1" class="tab-control" v-show="isTabFixed" />
+    <tab-control @tabClick="tabClick" :titles="['流行','新款','精选']" ref="tabControl1" class="tab-control"
+                 v-show="isTabFixed"/>
     <scroll class="content" ref="scroll"
             :probe-type="3"
             @scroll='scrollEvent'
@@ -12,7 +13,7 @@
       <home-swiper :banner="banner" @swiperImageLoad='swiperImageLoad'/>
       <recommend-view :recommend='recommend'/>
       <feature-view/>
-      <tab-control @tabClick="tabClick" :titles="['流行','新款','精选']" ref="tabControl2" />
+      <tab-control @tabClick="tabClick" :titles="['流行','新款','精选']" ref="tabControl2"/>
       <goods-list :goods="showGood"/>
     </scroll>
     <!--    原生组件的点击需要 .native-->
@@ -63,13 +64,21 @@ export default {
       currentGood: 'pop',
       isBackTopShow: false,
       tabOffsetTop: 0,
-      isTabFixed: false
+      isTabFixed: false,
+      saveY: 0
     }
   },
   computed: {
     showGood() {
       return this.goods[this.currentGood].list
     }
+  },
+  activated() {
+    //this.$refs.scroll.scrollTo(0, this.saveY, 1);
+    this.$refs.scroll.refresh()
+  },
+  deactivated() {
+    this.saveY = this.$refs.scroll.y
   },
   created() {
     this.homeRequst()
@@ -124,7 +133,7 @@ export default {
     swiperImageLoad() {
       //获取tabControl的offsetTop
       //所有的组件都有属性和 $el：用于获取组件中的元素
-      this.tabOffsetTop = this.$refs.tabControl.$el.offsetTop;
+      this.tabOffsetTop = this.$refs.tabControl2.$el.offsetTop;
     },
 
     //网络请求
@@ -179,7 +188,8 @@ export default {
 
   /*height: calc(100% - 93px);*/
 }
-.tab-control{
+
+.tab-control {
   position: relative;
   z-index: 9;
 }
