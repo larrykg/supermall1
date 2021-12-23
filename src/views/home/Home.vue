@@ -75,13 +75,25 @@ export default {
     this.getHomeGoods('sell')
   },
   mounted() {
+    const refresh = this.debounce(this.$refs.scroll.refresh, 50);
     //监听图片加载完成
     this.$bus.$on('itemImgLoad', () => {
-      this.$refs.bScroll && this.$refs.bScroll.refresh()
+      refresh()
     })
   },
   methods: {
     //事件监听
+    //防抖函数
+    debounce(func, delay) {
+      let timer = null;
+      return function (...arg) {
+        if (timer) clearTimeout(timer);
+        timer = setTimeout(() => {
+          func.apply(this, arg)
+        }, delay)
+      }
+    },
+
     tabClick(index) {
       switch (index) {
         case 0:
