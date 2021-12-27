@@ -21,7 +21,7 @@ export class Goods {
 }
 
 //店铺数据
-export class Shop{
+export class Shop {
   constructor(shopInfo) {
     this.logo = shopInfo.shopLogo;
     this.name = shopInfo.name;
@@ -29,5 +29,14 @@ export class Shop{
     this.sells = shopInfo.cSells;
     this.score = shopInfo.score;
     this.goodsCount = shopInfo.cGoods;
+  }
+}
+
+//参数数据
+export class GoodsParams {
+  constructor(info, rule) {
+    this.image = info.image ? info.image[0] : '';
+    this.infos = info.set;
+    this.sizes = rule.tables;
   }
 }

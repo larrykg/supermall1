@@ -1,11 +1,12 @@
 <template>
   <div id="detail">
     <detail-nav-bar class="detail-nav"/>
-    <scroll class="content">
+    <scroll class="content" ref="scroll">
       <detail-swiper :top-images="topImages"></detail-swiper>
       <detail-base-info :goods="goods"></detail-base-info>
       <detail-shop-info :shop='shop'></detail-shop-info>
-      <detail-goods-info :detail-info="detailInfo"/>
+      <detail-goods-info :detail-info="detailInfo" @imgLoad="imgLoad"/>
+      <detail-param-info :param-info="paramsInfo"/>
     </scroll>
   </div>
 </template>
@@ -16,9 +17,10 @@ import DetailSwiper from "./childComps/DetailSwiper";
 import DetailBaseInfo from "./childComps/DetailBaseInfo";
 import DetailShopInfo from "./childComps/DetailShopInfo";
 import DetailGoodsInfo from "./childComps/DetailGoodsInfo";
+import DetailParamInfo from "./childComps/DetailParamInfo";
 
 import Scroll from "components/common/scroll/Scroll";
-import {getDetail, Goods, Shop} from 'network/detail';
+import {getDetail, Goods, Shop, GoodsParams} from 'network/detail';
 
 export default {
   name: "Detail",
@@ -28,7 +30,8 @@ export default {
       topImages: [],
       goods: {},
       shop: {},
-      detailInfo:{}
+      detailInfo: {},
+      paramsInfo: {}
     }
   },
   components: {
@@ -37,7 +40,14 @@ export default {
     DetailBaseInfo,
     DetailShopInfo,
     Scroll,
-    DetailGoodsInfo
+    DetailGoodsInfo,
+    DetailParamInfo
+  },
+  methods: {
+    imgLoad() {
+      console.log(this.$refs);
+      this.$refs.scroll.refresh()
+    }
   },
   created() {
     this.iid = this.$route.params.iid;
@@ -53,6 +63,8 @@ export default {
       this.shop = new Shop(data.shopInfo);
       //商品详情数据
       this.detailInfo = data.detailInfo
+      //获取参数信息
+      this.paramsInfo = new GoodsParams(data.itemParams.info, data.itemParams.rule)
     })
   }
 }
@@ -65,12 +77,14 @@ export default {
   background: white;
   height: 100vh;
 }
-.detail-nav{
+
+.detail-nav {
   position: relative;
   z-index: 9;
   background: white;
 }
-.content{
+
+.content {
   height: calc(100% - 44px);
 }
 </style>
