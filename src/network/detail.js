@@ -6,6 +6,11 @@ export function getDetail(iid) {
     params: {iid}
   })
 }
+export function getRecommend(){
+  return request({
+    url:'/recommend'
+  })
+}
 
 //商品详情数据
 export class Goods {

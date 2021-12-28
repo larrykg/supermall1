@@ -17,6 +17,12 @@
 <script>
 export default {
   name: "DetailGoodsInfo",
+  data(){
+    return {
+      count:0,
+      imagesLength:0
+    }
+  },
   props: {
     detailInfo: {
       type: Object,
@@ -35,8 +41,8 @@ export default {
     }
   },
   watch: {
-    imagesInfo() {
-      this.imagesLength = this.imagesInfo.detailImage[0].list.length;
+    detailInfo() {
+      this.imagesLength = this.detailInfo.detailImage[0].list.length;
     }
   }
 }

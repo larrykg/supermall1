@@ -39,6 +39,7 @@ import GoodsList from 'components/content/goods/GoodsList'
 
 import {getHomeMultidata, homeRequst, getHomeGoods} from 'network/home';
 import {debounce} from "common/utils";
+import {mixin} from "common/mixin";
 
 export default {
   name: "Home",
@@ -52,6 +53,7 @@ export default {
     Scroll,
     BackTop
   },
+  mixins:[mixin],
   data() {
     return {
       banner: [],
@@ -74,11 +76,11 @@ export default {
     }
   },
   activated() {
-    //this.$refs.scroll.scrollTo(0, this.saveY, 1);
+    this.$refs.scroll.scrollTo(0, this.saveY, 1);
     this.$refs.scroll.refresh()
   },
   deactivated() {
-    this.saveY = this.$refs.scroll.y
+    this.saveY = this.$refs.scroll.scroll.y
   },
   created() {
     this.homeRequst()
@@ -90,7 +92,7 @@ export default {
   mounted() {
     const refresh = debounce(this.$refs.scroll.refresh, 50);
     //监听图片加载完成
-    this.$bus.$on('itemImgLoad', () => {
+    this.$bus.$on('HomeItemImgLoad', () => {
       refresh()
     })
 

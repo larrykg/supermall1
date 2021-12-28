@@ -1,6 +1,6 @@
 <template>
   <div class="goods-item" @click="itemClick">
-    <img :src="good.show.img" alt="" @load="imageLoad">
+    <img :src="showImage" alt="" @load="imageLoad">
     <div class="goods-info">
       <p>{{ good.title }}</p>
       <span class="price">{{ good.price }}</span>
@@ -22,11 +22,22 @@ export default {
   },
   methods: {
     imageLoad() {
+      //鉴于首页和详情得推荐都使用了本组件，需要分别讨论事件总线
       //事件总线
-      this.$bus.$emit('itemImgLoad')
+      if(this.$route.path.indexOf('/home')!=-1){
+        this.$bus.$emit('HomeItemImgLoad')
+      }else if(this.$route.path.indexOf('/recommend')!=-1){
+        this.$bus.$emit('detailImgLoad')
+      }
+
     },
     itemClick() {
       this.$router.push('/detail/' + this.good.iid)
+    }
+  },
+  computed:{
+    showImage(){
+      return this.good.image||this.good.show.img
     }
   }
 }
