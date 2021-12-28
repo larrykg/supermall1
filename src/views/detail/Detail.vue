@@ -1,6 +1,6 @@
 <template>
   <div id="detail">
-    <detail-nav-bar class="detail-nav"/>
+    <detail-nav-bar class="detail-nav" @titleClick="titleClick"/>
     <scroll class="content" ref="scroll">
       <detail-swiper :top-images="topImages"></detail-swiper>
       <detail-base-info :goods="goods"></detail-base-info>
@@ -54,6 +54,9 @@ export default {
   methods: {
     imgLoad() {
       this.$refs.scroll.refresh()
+    },
+    titleClick(){
+
     }
   },
   created() {
