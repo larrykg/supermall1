@@ -11,6 +11,7 @@
       <goods-list ref="recommend" :goods="recommend"></goods-list>
     </scroll>
     <detail-bottom-bar></detail-bottom-bar>
+    <back-top  @click.native="backClick" v-show="isBackTopShow"/>
   </div>
 </template>
 
@@ -29,6 +30,7 @@ import GoodsList from "components/content/goods/GoodsList";
 import {getDetail, Goods, Shop, GoodsParams, getRecommend} from 'network/detail';
 
 import {debounce} from 'common/utils.js'
+import {backTopMixin} from 'common/mixin.js'
 
 export default {
   name: "Detail",
@@ -59,6 +61,7 @@ export default {
     Scroll,
     GoodsList
   },
+  mixins:[backTopMixin],
   methods: {
     imgLoad() {
       this.$refs.scroll.refresh();
@@ -74,7 +77,8 @@ export default {
           this.currentIndex = i;
           this.$refs.detail_nav.currentIndex = i
         }
-      }
+      };
+      this.isBackTopShow = -position.y > 1000;
 
     }
   },
