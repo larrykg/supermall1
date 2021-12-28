@@ -1,7 +1,7 @@
 <template>
   <div id="detail">
-    <detail-nav-bar class="detail-nav" @titleClick="titleClick"/>
-    <scroll class="content" ref="scroll">
+    <detail-nav-bar class="detail-nav" ref="detail_nav" @titleClick="titleClick"/>
+    <scroll class="content" ref="scroll" @scroll="detailScroll" :probe-type="3">
       <detail-swiper :top-images="topImages"></detail-swiper>
       <detail-base-info :goods="goods"></detail-base-info>
       <detail-shop-info :shop='shop'></detail-shop-info>
@@ -10,6 +10,7 @@
       <detail-comment-info ref="comment" :commentInfo="commentInfo"/>
       <goods-list ref="recommend" :goods="recommend"></goods-list>
     </scroll>
+    <detail-bottom-bar></detail-bottom-bar>
   </div>
 </template>
 
@@ -21,6 +22,7 @@ import DetailShopInfo from "./childComps/DetailShopInfo";
 import DetailGoodsInfo from "./childComps/DetailGoodsInfo";
 import DetailParamInfo from "./childComps/DetailParamInfo";
 import DetailCommentInfo from "./childComps/DetailCommentInfo";
+import DetailBottomBar from "./childComps/DetailBottomBar";
 
 import Scroll from "components/common/scroll/Scroll";
 import GoodsList from "components/content/goods/GoodsList";
@@ -41,7 +43,8 @@ export default {
       commentInfo: {},
       recommend: [],
       themeTopY: [],
-      getThemeTopY: null
+      getThemeTopY: null,
+      currentIndex: 0
     }
   },
   components: {
@@ -52,6 +55,7 @@ export default {
     DetailGoodsInfo,
     DetailParamInfo,
     DetailCommentInfo,
+    DetailBottomBar,
     Scroll,
     GoodsList
   },
@@ -62,6 +66,16 @@ export default {
     },
     titleClick(index) {
       this.$refs.scroll.scrollTo(0, -this.themeTopY[index], 100)
+    },
+    detailScroll(position) {
+      const positionY = -position.y;
+      for (let i = 0, l = this.themeTopY.length; i < l - 1; i++) {
+        if (this.currentIndex != i && (positionY > this.themeTopY[i] && positionY < this.themeTopY[i + 1])) {
+          this.currentIndex = i;
+          this.$refs.detail_nav.currentIndex = i
+        }
+      }
+
     }
   },
   created() {
@@ -98,7 +112,8 @@ export default {
         this.themeTopY.push(this.$refs.param.$el.offsetTop);
         this.themeTopY.push(this.$refs.comment.$el.offsetTop);
         this.themeTopY.push(this.$refs.recommend.$el.offsetTop);
-      },900)
+        this.themeTopY.push(Number.MAX_VALUE);
+      }, 900)
 
     })
   },
@@ -123,6 +138,6 @@ export default {
 }
 
 .content {
-  height: calc(100% - 44px);
+  height: calc(100% - 44px - 49px);
 }
 </style>
