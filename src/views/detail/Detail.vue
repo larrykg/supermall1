@@ -6,9 +6,9 @@
       <detail-base-info :goods="goods"></detail-base-info>
       <detail-shop-info :shop='shop'></detail-shop-info>
       <detail-goods-info :detail-info="detailInfo" @imgLoad="imgLoad"/>
-      <detail-param-info :param-info="paramsInfo"/>
-      <detail-comment-info :commentInfo="commentInfo"/>
-      <goods-list :goods="recommend"></goods-list>
+      <detail-param-info ref="param" :param-info="paramsInfo"/>
+      <detail-comment-info ref="comment" :commentInfo="commentInfo"/>
+      <goods-list ref="recommend" :goods="recommend"></goods-list>
     </scroll>
   </div>
 </template>
@@ -24,7 +24,9 @@ import DetailCommentInfo from "./childComps/DetailCommentInfo";
 
 import Scroll from "components/common/scroll/Scroll";
 import GoodsList from "components/content/goods/GoodsList";
-import {getDetail, Goods, Shop, GoodsParams,getRecommend} from 'network/detail';
+import {getDetail, Goods, Shop, GoodsParams, getRecommend} from 'network/detail';
+
+import {debounce} from 'common/utils.js'
 
 export default {
   name: "Detail",
@@ -37,7 +39,9 @@ export default {
       detailInfo: {},
       paramsInfo: {},
       commentInfo: {},
-      recommend:[]
+      recommend: [],
+      themeTopY: [],
+      getThemeTopY: null
     }
   },
   components: {
@@ -53,10 +57,11 @@ export default {
   },
   methods: {
     imgLoad() {
-      this.$refs.scroll.refresh()
+      this.$refs.scroll.refresh();
+      this.getThemeTopY()
     },
-    titleClick(){
-
+    titleClick(index) {
+      this.$refs.scroll.scrollTo(0, -this.themeTopY[index], 100)
     }
   },
   created() {
@@ -80,10 +85,25 @@ export default {
         this.commentInfo = data.rate.list[0]
       }
       //获取推荐数据
-      getRecommend().then(res=>{
+      getRecommend().then(res => {
         this.recommend = res.data.list
-      })
+      });
+      this.$nextTick(() => {
+          //渲染下一帧时执行
+        }
+      );
+      this.getThemeTopY = debounce(() => {
+        this.themeTopY = [];
+        this.themeTopY.push(0);
+        this.themeTopY.push(this.$refs.param.$el.offsetTop);
+        this.themeTopY.push(this.$refs.comment.$el.offsetTop);
+        this.themeTopY.push(this.$refs.recommend.$el.offsetTop);
+      },900)
+
     })
+  },
+  updated() {
+
   }
 }
 </script>
