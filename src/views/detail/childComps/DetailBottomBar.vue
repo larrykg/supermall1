@@ -15,7 +15,7 @@
       </div>
     </div>
     <div class="bar-item bar-right">
-      <div class="cart" >加入购物车</div>
+      <div class="cart" @click="add2Cart">加入购物车</div>
       <div class="buy">购买</div>
     </div>
     <!--    <sport-ball ref="ball" class="sport-ball"></sport-ball>-->
@@ -24,7 +24,12 @@
 
 <script>
 export default {
-name: "DetailBottomBar"
+  name: "DetailBottomBar",
+  methods: {
+    add2Cart() {
+      this.$emit('addCart')
+    }
+  }
 }
 </script>
 
@@ -46,7 +51,7 @@ name: "DetailBottomBar"
   display: flex;
 }
 
-.bar-item>div {
+.bar-item > div {
   flex: 1;
 }
 
@@ -63,17 +68,17 @@ name: "DetailBottomBar"
 }
 
 .bar-left .service {
-  background-position:0 -54px;
+  background-position: 0 -54px;
 }
 
 .bar-left .shop {
-  background-position:0 -98px;
+  background-position: 0 -98px;
 }
 
 .bar-right {
   font-size: 15px;
   color: #fff;
-  line-height: 58px;
+  line-height: 49px;
 }
 
 .bar-right .cart {

@@ -21,7 +21,7 @@ export class Goods {
     this.discount = itemInfo.discountDesc;
     this.realPrice = itemInfo.lowNowPrice;
     this.columns = columns;
-    this.services = services;
+    this.services = services
   }
 }
 

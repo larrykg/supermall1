@@ -1,5 +1,6 @@
 <template>
   <div id="detail">
+
     <detail-nav-bar class="detail-nav" ref="detail_nav" @titleClick="titleClick"/>
     <scroll class="content" ref="scroll" @scroll="detailScroll" :probe-type="3">
       <detail-swiper :top-images="topImages"></detail-swiper>
@@ -10,9 +11,10 @@
       <detail-comment-info ref="comment" :commentInfo="commentInfo"/>
       <goods-list ref="recommend" :goods="recommend"></goods-list>
     </scroll>
-    <detail-bottom-bar></detail-bottom-bar>
-    <back-top  @click.native="backClick" v-show="isBackTopShow"/>
+    <detail-bottom-bar @addCart='addCart'/>
+    <back-top @click.native="backClick" v-show="isBackTopShow"/>
   </div>
+
 </template>
 
 <script>
@@ -61,8 +63,20 @@ export default {
     Scroll,
     GoodsList
   },
-  mixins:[backTopMixin],
+  mixins: [backTopMixin],
   methods: {
+    addCart(){
+      console.log('add');
+      //获取购物车需要展示的信息
+      const cartInfo = {};
+      cartInfo.img =this.topImages[0];
+      cartInfo.title =this.goods.title;
+      cartInfo.desc =this.goods.desc;
+      cartInfo.price =this.goods.realPrice;
+      cartInfo.iid = this.iid;
+      //将商品添加入购物车
+      this.$store.dispatch('addCart',cartInfo);
+    },
     imgLoad() {
       this.$refs.scroll.refresh();
       this.getThemeTopY()
@@ -77,7 +91,8 @@ export default {
           this.currentIndex = i;
           this.$refs.detail_nav.currentIndex = i
         }
-      };
+      }
+      ;
       this.isBackTopShow = -position.y > 1000;
 
     }
