@@ -66,7 +66,6 @@ export default {
   mixins: [backTopMixin],
   methods: {
     addCart(){
-      console.log('add');
       //获取购物车需要展示的信息
       const cartInfo = {};
       cartInfo.img =this.topImages[0];
@@ -101,7 +100,6 @@ export default {
     this.iid = this.$route.params.iid;
     //获取详情数据
     getDetail(this.iid).then(res => {
-      console.log(res);
       const data = res.result;
       //数据分离
       this.topImages = data.itemInfo.topImages;

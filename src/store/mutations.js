@@ -4,6 +4,7 @@ export default {
     payLoad.count++
   },
   addCart(state, payLoad) {
+    payLoad.isChecked = true;
     state.cartList.push(payLoad)
   }
 }
