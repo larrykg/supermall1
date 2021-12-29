@@ -13,6 +13,7 @@
     </scroll>
     <detail-bottom-bar @addCart='addCart'/>
     <back-top @click.native="backClick" v-show="isBackTopShow"/>
+    <toast :message="message" :show="show"/>
   </div>
 
 </template>
@@ -34,6 +35,8 @@ import {getDetail, Goods, Shop, GoodsParams, getRecommend} from 'network/detail'
 import {debounce} from 'common/utils.js'
 import {backTopMixin} from 'common/mixin.js'
 
+import Toast from "components/common/toast/Toast";
+
 export default {
   name: "Detail",
   data() {
@@ -48,7 +51,9 @@ export default {
       recommend: [],
       themeTopY: [],
       getThemeTopY: null,
-      currentIndex: 0
+      currentIndex: 0,
+      message: '',
+      show: false
     }
   },
   components: {
@@ -61,20 +66,29 @@ export default {
     DetailCommentInfo,
     DetailBottomBar,
     Scroll,
-    GoodsList
+    GoodsList,
+    Toast
   },
   mixins: [backTopMixin],
   methods: {
-    addCart(){
+    addCart() {
       //获取购物车需要展示的信息
       const cartInfo = {};
-      cartInfo.img =this.topImages[0];
-      cartInfo.title =this.goods.title;
-      cartInfo.desc =this.goods.desc;
-      cartInfo.price =this.goods.realPrice;
+      cartInfo.img = this.topImages[0];
+      cartInfo.title = this.goods.title;
+      cartInfo.desc = this.goods.desc;
+      cartInfo.price = this.goods.realPrice;
       cartInfo.iid = this.iid;
       //将商品添加入购物车
-      this.$store.dispatch('addCart',cartInfo);
+      this.$store.dispatch('addCart', cartInfo).then(res => {
+        console.log(res);
+        this.show = true;
+        this.message = res;
+        setTimeout(() => {
+          this.show = false;
+          this.message = '';
+        }, 1500)
+      });
     },
     imgLoad() {
       this.$refs.scroll.refresh();
