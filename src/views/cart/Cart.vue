@@ -1,24 +1,27 @@
 <template>
   <div class="cart">
     <nav-bar class="nav-bar">
-      <div slot="center">购物车({{ cartLength }})</div>
+      <div slot="center">购物车({{ length }})</div>
     </nav-bar>
   </div>
 </template>
 
 <script>
 import NavBar from "components/common/navbar/NavBar";
-
+import {mapGetters} from 'vuex'
 export default {
   name: "Cart",
   components: {
     NavBar
   },
   computed:{
-    cartLength(){
-      return this.$store.state.cartList.length
-    }
+    //可以有两种语法
+   // ...mapGetters(['cartLength','cartList']),
 
+   ...mapGetters({
+     length:'cartLength',
+     cart:'cartList'
+   })
   }
 }
 </script>
